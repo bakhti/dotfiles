@@ -1,0 +1,18 @@
+#+TITLE: My Dotfiles Repo
+
+* Emacs Init File
+
+My Emacs config avoids package management - it uses only ~use-package~ for configuration. All dependencies (extensions, fonts, CLI tools, etc.) are managed via GNU Guix.
+
+* Guix Home
+
+Guix is used as a package manager on a foreign distro.
+
+** Apply Last Changes
+
+Run the following to reconfigure your home environment:
+
+#+begin_src shell
+GUIX_PACKAGE_PATH=~/src/dotfiles/guix-home/modules \
+  guix home reconfigure ~/src/dotfiles/guix-home/home.scm
+#+end_src

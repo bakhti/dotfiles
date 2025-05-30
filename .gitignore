@@ -1,0 +1,7 @@
+# Emacs backup files
+*~
+\#*\#
+.#*
+
+# Optional: if you ever use ediff/merge
+*.orig
