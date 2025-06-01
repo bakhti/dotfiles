@@ -150,7 +150,11 @@
   (setq eglot-sync-connect nil
 	eglot-autoshutdown t))
 
-(use-package vterm)
+(use-package vterm
+  :hook
+  (vterm-mode . (lambda ()
+		  (face-remap-add-relative
+		   'default '(:family "IosevkaTerm MNF" :height 150)))))
 
 (use-package org
   :config

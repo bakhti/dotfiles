@@ -6,11 +6,13 @@
 	     (gnu packages golang-xyz)
 	     (gnu packages rust-apps)
 	     (gnu packages fonts)
+	     (gnu packages shellutils)
 	     (ab packages k8s)
 	     (ab packages fonts)
 	     (ab packages emacs)
 	     (gnu home services)
-	     (gnu home services shells))
+	     (gnu home services shells)
+	     (guix gexp))
 
 (home-environment
  (packages
@@ -45,12 +47,19 @@
 	go
 	gopls
 	ripgrep
+	starship
 	kubectl
 	kind
 	font-jetbrains-mono
 	font-iosevka-aile
+	font-nerd-iosevka-term
+	font-nerd-monofur
 	font-nerd-symbols))
 
  (services
   (list
-   (service home-bash-service-type))))
+   (service home-bash-service-type
+	    (home-bash-configuration
+	     (bashrc
+	      (list
+	       (local-file "files/bash-prompt"))))))))

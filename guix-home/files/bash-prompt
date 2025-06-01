@@ -1,0 +1,3 @@
+# -*- mode: sh; -*-
+# bash prompt customisation
+eval "$(starship init bash)"
