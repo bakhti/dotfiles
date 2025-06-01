@@ -2,17 +2,58 @@
 
 * Emacs Init File
 
-My Emacs config avoids package management - it uses only ~use-package~ for configuration. All dependencies (extensions, fonts, CLI tools, etc.) are managed via GNU Guix.
+My Emacs configuration avoids any package management - it uses ~use-package~ only for declarative configuration. All dependencies (extensions, fonts, CLI tools, etc.) are managed via GNU Guix.
 
 * Guix Home
 
-Guix is used as a package manager on a foreign distro.
+Guix is used as a package manager on a foreign distro to manage my user environment.
 
-** Apply Last Changes
+** Apply Latest Changes
 
-Run the following to reconfigure your home environment:
+To reconfigure your home environment, run:
 
 #+begin_src shell
 GUIX_PACKAGE_PATH=~/src/dotfiles/guix-home/modules \
   guix home reconfigure ~/src/dotfiles/guix-home/home.scm
+#+end_src
+
+** Tips
+
+- Temporarily disable SELinux if there's no policy module to allow Guix operations yet:
+
+#+begin_src shell
+sudo setenforce 0
+#+end_src
+
+- When creating a custom package, you can force Guix to compute the correct SHA256 by:
+  1. Temporarily adding the package name at the end of the file
+  2. Using any placeholder SHA256 hash
+  3. Attempting to build the package:
+
+#+begin_src shell
+guix build -f modules/ab/packages/emacs.scm
+#+end_src
+
+Guix will fail with a message like:
+
+#+begin_src shell
+sha256 hash mismatch for source ...
+expected: <correct hash>
+actual:   ...
+#+end_src
+
+Use the *actual* hash in your package definition.
+
+- If Guix reports that a custom package is missing, it may be due to a syntax error in the package definition. You can debug this using ~guix repl~:
+
+#+begin_src shell
+export GUILE_LOAD_PATH="~/src/dotfiles/guix-home/modules"
+guix repl
+#+end_src
+
+Then in the REPL:
+
+#+begin_src scheme
+,use (ab packages k8s)
+kubectl
 #+end_src

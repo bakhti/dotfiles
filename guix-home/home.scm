@@ -29,6 +29,7 @@
         emacs-magit
         emacs-envrc
         emacs-go-mode
+	emacs-gptel
         emacs-nerd-icons
 	emacs-nerd-icons-completion
 	emacs-nerd-icons-corfu
