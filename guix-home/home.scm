@@ -17,6 +17,7 @@
 (home-environment
  (packages
   (list emacs-ef-themes
+	emacs-expand-region
         emacs-fontaine
         emacs-vertico
         emacs-orderless
@@ -51,6 +52,8 @@
 	starship
 	kubectl
 	kind
+	helm
+	terraform
 	font-jetbrains-mono
 	font-iosevka-aile
 	font-nerd-iosevka-term

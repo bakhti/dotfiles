@@ -181,4 +181,7 @@
   :config
   (rg-enable-default-bindings))
 
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 (use-package 0x0)

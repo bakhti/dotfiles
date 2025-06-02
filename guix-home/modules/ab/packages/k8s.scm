@@ -2,8 +2,9 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system copy)
-  #:use-module (guix licenses)
-  #:use-module (gnu packages))
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages compression))
 
 (define-public kubectl
   (package
@@ -28,7 +29,7 @@
    (home-page "https://kubernetes.io")
    (synopsis "CLI tool to manage Kubernetes")
    (description "Command-line tool to interact with Kubernetes clusters")
-   (license asl2.0)))
+   (license license:asl2.0)))
 
 (define-public kind
   (package
@@ -53,4 +54,64 @@
    (home-page "https://kind.sigs.k8s.io")
    (synopsis "Kubernetes in Docker")
    (description "kind is a tool for running local Kubernetes clusters using Docker container nodes")
-   (license asl2.0)))
+   (license license:asl2.0)))
+
+(define-public helm
+  (package
+   (name "helm")
+   (version "3.18.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append "https://get.helm.sh/helm-v" version "-linux-amd64.tar.gz"))
+     (sha256 (base32 "01ac751zxcaizjlmb8jrrn7n4qzwr8z830kjc56g6c7xc7ifiixi"))))
+   (build-system copy-build-system)
+   (arguments
+    `(#:install-plan
+      '(("helm" "bin/helm"))
+      #:phases
+      (modify-phases %standard-phases
+		     (add-after 'install 'make-executable
+				(lambda* (#:key outputs #:allow-other-keys)
+				  (let ((out (assoc-ref outputs "out")))
+				    (chmod (string-append out "/bin/helm") #o755)
+				    #t))))))
+   (home-page "https://helm.sh")
+   (synopsis "Helm package manager for Kubernetes")
+   (description "Helm helps you manage Kubernetes applications - Helm Charts help you define, install, and upgrade even the most complex Kubernetes apps")
+   (license license:asl2.0)))
+
+(define license:busl1.1
+  (let ((license-type (record-type-descriptor license:expat)))
+    ((record-constructor license-type)
+     "BUSL-1.1"
+     "https://github.com/hashicorp/terraform/blob/main/LICENSE"
+     #f)))
+
+(define-public terraform
+  (package
+   (name "terraform")
+   (version "1.12.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append "https://releases.hashicorp.com/terraform/"
+			 version "/terraform_" version "_linux_amd64.zip"))
+     (sha256 (base32 "0z7gjx1zwzqzjvrjwl9p8va1lv5nafx49v39cwd462k606l8pbyw"))))
+   (build-system copy-build-system)
+   (native-inputs
+    `(("unzip" ,unzip)))
+   (arguments
+    `(#:install-plan
+      '(("terraform" "bin/terraform"))
+      #:phases
+      (modify-phases %standard-phases
+		     (add-after 'install 'make-executable
+				(lambda* (#:key outputs #:allow-other-keys)
+				  (let ((out (assoc-ref outputs "out")))
+				    (chmod (string-append out "/bin/terraform") #o755)
+				    #t))))))
+   (home-page "https://terraform.io")
+   (synopsis "Tool for building, changing, and versioning infrastructure safely and efficiently")
+   (description "Terraform enables you to safely and predictably create, change, and improve infrastructure")
+   (license license:busl1.1)))
