@@ -137,12 +137,13 @@
   :config
   (envrc-global-mode))
 
-(use-package go-mode
+(use-package go-ts-mode
   :mode "\\.go\\'"
-  :hook ((go-mode . eglot-ensure)
-	 (go-mode . (lambda ()
-		      (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
-		      (add-hook 'before-save-hook #'eglot-code-action-organize-imports nil t)))))
+  :hook
+  ((go-ts-mode . eglot-ensure)
+   (go-ts-mode . (lambda ()
+		(add-hook 'before-save-hook #'eglot-format-buffer -10 t)
+		(add-hook 'before-save-hook #'eglot-code-action-organize-imports nil t)))))
 
 (use-package eglot
   :defer t
@@ -154,7 +155,7 @@
   :hook
   (vterm-mode . (lambda ()
 		  (face-remap-add-relative
-		   'default '(:family "IosevkaTerm MNF" :height 150)))))
+		   'default '(:family "Monofur Nerd Font Mono" :height 150)))))
 
 (use-package org
   :config

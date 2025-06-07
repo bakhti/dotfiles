@@ -1,4 +1,7 @@
 (use-modules (gnu home)
+	     (gnu home services)
+	     (gnu home services shells)
+	     (gnu packages)
 	     (gnu packages emacs)
 	     (gnu packages emacs-xyz)
 	     (gnu packages version-control)
@@ -7,12 +10,25 @@
 	     (gnu packages rust-apps)
 	     (gnu packages fonts)
 	     (gnu packages shellutils)
+	     (gnu packages tree-sitter)
 	     (ab packages k8s)
 	     (ab packages fonts)
 	     (ab packages emacs)
-	     (gnu home services)
-	     (gnu home services shells)
-	     (guix gexp))
+	     (guix derivations)
+	     (guix gexp)
+	     (guix packages)
+	     (guix store))
+
+(define (tree-sitter-lib-link lang)
+  (let* ((package-name (string-append "tree-sitter-" lang))
+	 (store (open-connection))
+	 (drv (package-derivation store (specification->package package-name)))
+         (output-path (derivation->output-path drv))
+         (lib-path (string-append output-path "/lib/tree-sitter/libtree-sitter-" lang ".so"))
+	 (target-path (string-append ".emacs.d/tree-sitter/libtree-sitter-" lang ".so")))
+    (if (file-exists? lib-path)
+	`((,target-path ,lib-path))
+	'())))
 
 (home-environment
  (packages
@@ -48,6 +64,8 @@
         git
 	go
 	gopls
+	tree-sitter-go
+	tree-sitter-gomod
 	ripgrep
 	starship
 	kubectl
@@ -66,4 +84,8 @@
 	    (home-bash-configuration
 	     (bashrc
 	      (list
-	       (local-file "files/bash-prompt"))))))))
+	       (local-file "files/bash-prompt")))))
+   (simple-service 'tree-sitter-symlinks
+                   home-files-service-type
+                   (apply append
+			  (map tree-sitter-lib-link '("go" "gomod")))))))
