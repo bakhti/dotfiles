@@ -85,6 +85,14 @@
 	     (bashrc
 	      (list
 	       (local-file "files/bash-prompt")))))
+   (simple-service 'emacs-daemon-service
+		   home-files-service-type
+		   `((".config/systemd/user/emacs.service"
+		      ,(local-file "files/emacs.service"))))
+   (simple-service 'profile-env-vars-service
+		   home-environment-variables-service-type
+		   `(("VISUAL" . "emacsclient")
+		     ("EDITOR" . "emacsclient")))
    (simple-service 'tree-sitter-symlinks
                    home-files-service-type
                    (apply append

@@ -11,7 +11,7 @@
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (when (file-exists-p custom-file)
     (load custom-file))
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 (use-package ef-themes
   :config
@@ -186,3 +186,24 @@
   :bind ("C-=" . er/expand-region))
 
 (use-package 0x0)
+
+(use-package gptel
+  :init
+  (setq gptel-default-mode 'org-mode
+        gptel-use-curl nil
+        gptel-stream t)
+  (gptel-make-openai "OpenRouter"
+     :host "https://openrouter.ai/api/v1"
+     :key (auth-source-pick-first-password :host "openrouter.ai")
+     :models '("mistralai/Mixtral-8x7B-Instruct-v0.1"
+               "meta-llama/Llama-3-8b-chat-hf"))
+  (gptel-make-openai "Together"
+     :host "https://api.together.xyz/v1"
+     :key (auth-source-pick-first-password :host "api.together.xyz")
+     :models '("mistralai/Mixtral-8x7B-Instruct-v0.1"))
+  :config
+  (setq gptel-backend
+        (gptel-make-openai "Ollama"
+          :host "http://localhost:11434/v1"
+          :stream t
+          :models '("llama3"))))
