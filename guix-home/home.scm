@@ -44,6 +44,7 @@
         emacs-wgrep
         emacs-which-key
         emacs-magit
+	emacs-git-link
         emacs-envrc
         emacs-go-mode
 	emacs-gptel

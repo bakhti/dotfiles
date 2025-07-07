@@ -104,6 +104,14 @@
          ;; opened file.
          ("M-s M-b" . consult-buffer)))
 
+(use-package recentf
+  :init
+  (recentf-mode 1)
+  :custom
+  (recentf-max-menu-items 25)
+  (recentf-max-saved-items 100)
+  (recentf-save-file (expand-file-name "recentf" user-emacs-directory)))
+
 (use-package embark
   :after vertico
   :bind (("C-." . embark-act)
@@ -132,6 +140,7 @@
   (setq project-vc-extra-root-markers '(".project")))
 
 (use-package magit)
+(use-package git-link)
 
 (use-package envrc
   :config
@@ -160,15 +169,16 @@
 (use-package org
   :config
   (require 'org-tempo)
-  ;; Enable babel support for listed languages
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
      (python . t)
      (shell . t)
-     (go . t)))
+     (go . t)
+     (sql . t)))
   (setq org-src-fontify-natively t
-        org-src-tab-acts-natively t
+	org-src-tab-acts-natively t
+	org-src-preserve-indentation t
         org-confirm-babel-evaluate nil)
   :hook (org-mode . visual-line-mode))
 
@@ -191,19 +201,17 @@
   :init
   (setq gptel-default-mode 'org-mode
         gptel-use-curl nil
-        gptel-stream t)
-  (gptel-make-openai "OpenRouter"
-     :host "https://openrouter.ai/api/v1"
-     :key (auth-source-pick-first-password :host "openrouter.ai")
-     :models '("mistralai/Mixtral-8x7B-Instruct-v0.1"
-               "meta-llama/Llama-3-8b-chat-hf"))
-  (gptel-make-openai "Together"
-     :host "https://api.together.xyz/v1"
-     :key (auth-source-pick-first-password :host "api.together.xyz")
-     :models '("mistralai/Mixtral-8x7B-Instruct-v0.1"))
+        gptel-stream nil)
   :config
   (setq gptel-backend
-        (gptel-make-openai "Ollama"
-          :host "http://localhost:11434/v1"
-          :stream t
-          :models '("llama3"))))
+	(gptel-make-openai "OpenRouter"
+	  :host "openrouter.ai"
+	  :endpoint "/api/v1/chat/completions"
+	  :stream t
+	  :key (auth-source-pick-first-password :host "openrouter.ai")
+	  :models '(meta-llama/llama-3-8b-instruct
+		    openai/gpt-3.5-turbo-instruct
+		    anthropic/claude-3-haiku
+		    mistralai/mixtral-8x7b-instruct
+		    ))))
+
