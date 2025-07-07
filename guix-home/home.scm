@@ -71,7 +71,7 @@
 	kubectl
 	kind
 	helm
-	terraform
+	opentofu
 	font-jetbrains-mono
 	font-iosevka-aile
 	font-nerd-iosevka-term

@@ -81,37 +81,30 @@
    (description "Helm helps you manage Kubernetes applications - Helm Charts help you define, install, and upgrade even the most complex Kubernetes apps")
    (license license:asl2.0)))
 
-(define license:busl1.1
-  (let ((license-type (record-type-descriptor license:expat)))
-    ((record-constructor license-type)
-     "BUSL-1.1"
-     "https://github.com/hashicorp/terraform/blob/main/LICENSE"
-     #f)))
-
-(define-public terraform
+(define-public opentofu
   (package
-   (name "terraform")
-   (version "1.12.1")
+   (name "opentofu")
+   (version "1.10.2")
    (source
     (origin
      (method url-fetch)
-     (uri (string-append "https://releases.hashicorp.com/terraform/"
-			 version "/terraform_" version "_linux_amd64.zip"))
-     (sha256 (base32 "0z7gjx1zwzqzjvrjwl9p8va1lv5nafx49v39cwd462k606l8pbyw"))))
+     (uri (string-append "https://github.com/opentofu/opentofu/releases/download/v"
+			 version "/tofu_" version "_linux_amd64.zip"))
+     (sha256 (base32 "1qxmnx6sq2b6mir6a1vdr5ynbmky5s8b6g24iypc6rjyzhlaspyb"))))
    (build-system copy-build-system)
    (native-inputs
     `(("unzip" ,unzip)))
    (arguments
     `(#:install-plan
-      '(("terraform" "bin/terraform"))
+      '(("tofu" "bin/tofu"))
       #:phases
       (modify-phases %standard-phases
 		     (add-after 'install 'make-executable
 				(lambda* (#:key outputs #:allow-other-keys)
 				  (let ((out (assoc-ref outputs "out")))
-				    (chmod (string-append out "/bin/terraform") #o755)
+				    (chmod (string-append out "/bin/tofu") #o755)
 				    #t))))))
-   (home-page "https://terraform.io")
-   (synopsis "Tool for building, changing, and versioning infrastructure safely and efficiently")
-   (description "Terraform enables you to safely and predictably create, change, and improve infrastructure")
-   (license license:busl1.1)))
+   (home-page "https://opentofu.org")
+   (synopsis "Open-source fork of Terraform for infrastructure as code")
+   (description "OpenTofu is an open-source, drop-in replacement for Terraform 1.6+, maintained by the community and governed by the Linux Foundation")
+   (license license:mpl2.0)))
